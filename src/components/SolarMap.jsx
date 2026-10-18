@@ -1,4 +1,4 @@
-import { compressDistance } from "../lib/scale.js";
+import { compressDistance, MAP_RADIUS, getMapPosition } from "../lib/scale.js";
 
 const PLANETS = [
   { name: "Mercure", distance: 0.39 },
@@ -10,9 +10,11 @@ const PLANETS = [
   { name: "Uranus", distance: 19.2 },
   { name: "Neptune", distance: 30.1 },
 ];
-const MAP_RADIUS = 90;
 
-function SolarMap() {
+function SolarMap({ voyager1, voyager2 }) {
+  const position1 = voyager1 ? getMapPosition(voyager1) : null;
+  const position2 = voyager2 ? getMapPosition(voyager2) : null;
+
   return (
     <svg
       viewBox="-100 -100 200 200"
@@ -32,6 +34,22 @@ function SolarMap() {
           />
         );
       })}
+      {voyager1 && (
+        <circle
+          cx={position1.cx}
+          cy={position1.cy}
+          r="3"
+          fill="var(--voyager1)"
+        />
+      )}
+      {voyager2 && (
+        <circle
+          cx={position2.cx}
+          cy={position2.cy}
+          r="3"
+          fill="var(--voyager2)"
+        />
+      )}
     </svg>
   );
 }

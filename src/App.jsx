@@ -27,7 +27,7 @@ function App() {
         label="Voyager 2"
         color="var(--voyager2)"
       />
-      <SolarMap />
+      <SolarMap voyager1={voyager1Data} voyager2={voyager2Data} />
     </main>
   );
 }
