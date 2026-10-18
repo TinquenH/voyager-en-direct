@@ -1,4 +1,5 @@
 import ProbeCard from "./components/ProbeCard.jsx";
+import SolarMap from "./components/SolarMap.jsx";
 
 function App() {
   return (
@@ -10,6 +11,7 @@ function App() {
       </p>
       <ProbeCard probe="voyager1" label="Voyager 1" color="var(--voyager1)" />
       <ProbeCard probe="voyager2" label="Voyager 2" color="var(--voyager2)" />
+      <SolarMap />
     </main>
   );
 }
