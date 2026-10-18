@@ -1,28 +1,54 @@
-export const AU_KM = 149597870.7;
-export const C_KM_S = 299792.458;
-export const DAY_S = 86400;
+// Proxy Netlify : appelle JPL Horizons à la place du navigateur (qui est bloqué par le CORS).
+// Format "classique" des fonctions Netlify : on exporte une fonction nommée `handler`.
+// Usage côté page : fetch('/api/horizons?probe=voyager1&center=sun')
 
-export function parseHorizons(result) {
-  const start = result.indexOf('$$SOE');
-  const end = result.indexOf('$$EOE');
-  if (start === -1 || end === -1) {
-    throw new Error('Réponse Horizons sans données : ' + result.trim().slice(0, 200));
+const HORIZONS_URL = 'https://ssd.jpl.nasa.gov/api/horizons.api';
+
+// Liste blanche : on n'accepte que ces valeurs, pour ne pas devenir un proxy ouvert à tout le monde.
+const PROBES = { voyager1: '-31', voyager2: '-32' };
+const CENTERS = { sun: '500@10', earth: '500@399' };
+
+// Petit utilitaire : construit une réponse JSON
+const json = (statusCode, body, extraHeaders = {}) => ({
+  statusCode,
+  headers: { 'Content-Type': 'application/json', ...extraHeaders },
+  body: JSON.stringify(body),
+});
+
+export const handler = async (event) => {
+  const params = event.queryStringParameters ?? {};
+  const probe = params.probe;
+  const center = params.center ?? 'sun';
+
+  if (!Object.hasOwn(PROBES, probe) || !Object.hasOwn(CENTERS, center)) {
+    return json(400, { error: 'Paramètres invalides' });
   }
-  const block = result.slice(start + 5, end);
-  const values = {};
-  for (const [, key, num] of block.matchAll(/\b([A-Z]{1,2})\s*=\s*(-?\d+(?:\.\d+)?(?:E[+-]?\d+)?)/g)) {
-    if (!(key in values)) values[key] = Number(num);
+
+  // Dates du jour et du lendemain (UTC), au format AAAA-MM-JJ
+  const today = new Date();
+  const tomorrow = new Date(today.getTime() + 24 * 3600 * 1000);
+  const day = (d) => d.toISOString().slice(0, 10);
+
+  const query = new URLSearchParams({
+    format: 'json',
+    COMMAND: `'${PROBES[probe]}'`,
+    EPHEM_TYPE: 'VECTORS',
+    CENTER: `'${CENTERS[center]}'`,
+    OUT_UNITS: 'AU-D',
+    VEC_TABLE: '3',
+    START_TIME: `'${day(today)}'`,
+    STOP_TIME: `'${day(tomorrow)}'`,
+    STEP_SIZE: "'1 d'",
+  });
+
+  try {
+    const upstream = await fetch(`${HORIZONS_URL}?${query}`);
+    if (!upstream.ok) {
+      return json(502, { error: `Horizons a répondu ${upstream.status}` });
+    }
+    const data = await upstream.json();
+    return json(200, data, { 'Cache-Control': 'public, max-age=300' }); // 5 minutes
+  } catch {
+    return json(502, { error: 'Horizons injoignable' });
   }
-  for (const k of ['X', 'Y', 'Z', 'VX', 'VY', 'VZ', 'RG']) {
-    if (!Number.isFinite(values[k])) throw new Error(`Valeur manquante dans la réponse : ${k}`);
-  }
-  const distanceKm = values.RG * AU_KM;
-  return {
-    x: values.X, y: values.Y, z: values.Z,
-    distanceAu: values.RG,
-    distanceKm,
-    signalSeconds: distanceKm / C_KM_S,
-    speedKmS: Math.hypot(values.VX, values.VY, values.VZ) * AU_KM / DAY_S,
-    lightTimeDays: values.LT,
-  };
-}
+};

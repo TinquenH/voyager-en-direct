@@ -1,0 +1,16 @@
+:root {
+  --bg: #14122b;
+  --ink: #f1ecdc;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: "IBM Plex Sans", sans-serif;
+}
+
+h1,
+h2 {
+  font-family: "Fraunces", serif;
+}

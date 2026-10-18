@@ -1,0 +1,5 @@
+# Garde l'adresse /api/horizons pour la page, et l'envoie vers la fonction
+[[redirects]]
+  from = "/api/horizons"
+  to = "/.netlify/functions/horizons"
+  status = 200
