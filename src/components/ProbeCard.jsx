@@ -1,23 +1,6 @@
-import { useEffect, useState } from "react";
 import { formatInteger, formatDuration, formatDecimal } from "../lib/format.js";
-import { getProbe } from "../lib/api.js";
 
-function ProbeCard({ probe, label, color }) {
-  const [probeData, setProbeData] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await getProbe(probe);
-        setProbeData(result);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-    fetchData();
-  }, [probe]);
-
+function ProbeCard({ label, color, probeData, error }) {
   let content;
 
   if (error) {
