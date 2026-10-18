@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { formatInteger, formatDuration, formatDecimal } from "../lib/format.js";
 import { getProbe } from "../lib/api.js";
 
-function ProbeCard({ probe, label }) {
+function ProbeCard({ probe, label, color }) {
   const [probeData, setProbeData] = useState(null);
   const [error, setError] = useState(null);
 
@@ -28,18 +28,24 @@ function ProbeCard({ probe, label }) {
     content = (
       <dl>
         <dt>Distance au Soleil</dt>
-        <dd>{formatDecimal(probeData.distanceAu)} UA</dd>
+        <dd>
+          <span className="big">{formatDecimal(probeData.distanceAu)}</span> UA
+        </dd>
         <dd>{formatInteger(probeData.distanceKm)} km</dd>
         <dt>Délai du signal radio</dt>
-        <dd>{formatDuration(probeData.signalSeconds)}</dd>
+        <dd>
+          <span className="big">{formatDuration(probeData.signalSeconds)}</span>
+        </dd>
         <dt>Vitesse</dt>
-        <dd>{formatDecimal(probeData.speedKmS)} km/s</dd>
+        <dd>
+          <span className="big">{formatDecimal(probeData.speedKmS)}</span> km/s
+        </dd>
       </dl>
     );
   }
 
   return (
-    <article>
+    <article className="probe-card" style={{ "--probe": color }}>
       <h2>{label}</h2>
       {content}
     </article>
