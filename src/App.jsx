@@ -15,19 +15,23 @@ function App() {
         Positions calculées à partir de la trajectoire des sondes (JPL Horizons,
         NASA), et non issues d'une télémétrie en direct.
       </p>
-      <ProbeCard
-        probeData={voyager1Data}
-        error={voyager1Error}
-        label="Voyager 1"
-        color="var(--voyager1)"
-      />
-      <ProbeCard
-        probeData={voyager2Data}
-        error={voyager2Error}
-        label="Voyager 2"
-        color="var(--voyager2)"
-      />
-      <SolarMap voyager1={voyager1Data} voyager2={voyager2Data} />
+      <div className="layout">
+        <SolarMap voyager1={voyager1Data} voyager2={voyager2Data} />
+        <div className="cards">
+          <ProbeCard
+            probeData={voyager1Data}
+            error={voyager1Error}
+            label="Voyager 1"
+            color="var(--voyager1)"
+          />
+          <ProbeCard
+            probeData={voyager2Data}
+            error={voyager2Error}
+            label="Voyager 2"
+            color="var(--voyager2)"
+          />
+        </div>
+      </div>
     </main>
   );
 }

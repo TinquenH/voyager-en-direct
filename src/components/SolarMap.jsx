@@ -17,37 +17,37 @@ function SolarMap({ voyager1, voyager2 }) {
 
   return (
     <svg
+      className="solar-map"
       viewBox="-100 -100 200 200"
       role="img"
       aria-label="Carte du Système Solaire"
     >
-      <circle cx="0" cy="0" r="5" fill="orange" />
+      <circle className="sun" cx="0" cy="0" r="5" />
       {PLANETS.map((planet) => {
         return (
           <circle
+            className="orbit"
             key={planet.name}
             cx="0"
             cy="0"
             r={compressDistance(planet.distance) * MAP_RADIUS}
-            fill="none"
-            stroke="gray"
           />
         );
       })}
-      {voyager1 && (
+      {position1 && (
         <circle
+          className="probe-dot voyager1"
           cx={position1.cx}
           cy={position1.cy}
           r="3"
-          fill="var(--voyager1)"
         />
       )}
-      {voyager2 && (
+      {position2 && (
         <circle
+          className="probe-dot voyager2"
           cx={position2.cx}
           cy={position2.cy}
           r="3"
-          fill="var(--voyager2)"
         />
       )}
     </svg>

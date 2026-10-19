@@ -3,6 +3,7 @@
   --ink: #f1ecdc;
   --voyager1: #d9a441;
   --voyager2: #6ec3c0;
+  --sun: #f28c38;
 }
 
 :focus-visible {
@@ -58,4 +59,42 @@ h2 {
 
 .note {
   opacity: 0.7;
+}
+
+.layout {
+  display: grid;
+  gap: 2rem;
+}
+
+.solar-map {
+  display: block;
+  width: 100%;
+  max-width: 36rem;
+  margin: 1.5rem auto;
+  align-self: center;
+}
+
+.sun {
+  fill: var(--sun);
+  filter: drop-shadow(0 0 6px var(--sun));
+}
+
+.orbit {
+  fill: none;
+  stroke: var(--ink);
+  opacity: 0.25;
+}
+
+.probe-dot.voyager1 {
+  fill: var(--voyager1);
+}
+
+.probe-dot.voyager2 {
+  fill: var(--voyager2);
+}
+
+@media (min-width: 48rem) {
+  .layout {
+    grid-template-columns: 3fr 2fr;
+  }
 }
