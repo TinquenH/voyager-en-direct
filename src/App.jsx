@@ -15,7 +15,9 @@ function App() {
       <h1>Voyager en direct</h1>
       <p className="note">
         Positions calculées à partir de la trajectoire des sondes (JPL Horizons,
-        NASA), et non issues d'une télémétrie en direct.
+        NASA), et non issues d'une télémétrie en direct. Les chiffres de départ
+        correspondent à minuit UTC ; les compteurs en sont une estimation,
+        extrapolée en supposant que la vitesse reste constante.
       </p>
       <div className="layout">
         <SolarMap voyager1={voyager1Data} voyager2={voyager2Data} />
